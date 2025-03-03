@@ -1,3 +1,6 @@
+/*
+ https://github.com/Unity-Technologies/EntityComponentSystemSamples
+ */
 using Unity.Entities;
 
 /// <summary>
