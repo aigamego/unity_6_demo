@@ -4,7 +4,7 @@ using Unity.Entities;
 /// 怪出生需要的数据
 /// </summary>
 [ChunkSerializable]
-public class MonsterSpawn_Data: IComponentData
+public struct MonsterSpawn_Data: IComponentData
 {
     /// <summary>
     /// 怪物的预制体实体
