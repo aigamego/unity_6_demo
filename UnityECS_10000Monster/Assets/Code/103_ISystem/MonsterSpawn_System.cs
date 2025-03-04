@@ -19,6 +19,13 @@ partial struct MonsterSpawn_System : ISystem
     private float xOffset;
     private float yOffset;
 
+    // Start position for spawning monsters (left-bottom corner)
+    private float startX;
+    private float startY;
+    private float xMax;
+    private float spawnInterval;
+
+
     [BurstCompile]
     public void OnCreate(ref SystemState state)
     {
@@ -26,9 +33,15 @@ partial struct MonsterSpawn_System : ISystem
         // 使用固定种子初始化随机生成器（如果需要，可以使用动态种子）
         random = new Unity.Mathematics.Random(12345);
 
-        // Initialize the X and Y offsets
-        xOffset = 0f;
-        yOffset = 0f;
+        // Initialize the X and Y offsets and other parameters
+        startX = -7f;
+        startY = -7f;
+        xMax = 15f;
+        spawnInterval = 1f;
+
+
+        xOffset = startX;
+        yOffset = startY;
 
         // Optionally, you can perform an initial spawn here if needed.
         // 如果需要，也可以在这里进行初始生成。
@@ -84,11 +97,11 @@ partial struct MonsterSpawn_System : ISystem
                     //entityManager.SetComponentData(monsters[i], new Monster { speed = random.NextFloat(1f, 5f) });
 
                     // Increment the offsets for the next monster
-                    xOffset += 0.5f;
-                    if (xOffset > 5f) // Example: Reset xOffset after reaching 5
+                    xOffset += spawnInterval;
+                    if (xOffset > xMax)
                     {
-                        xOffset = 0f;
-                        yOffset += 0.5f;
+                        xOffset = startX;
+                        yOffset += spawnInterval;
                     }
                 }
 
