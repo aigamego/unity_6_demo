@@ -27,53 +27,61 @@ partial struct MonsterSpawn_System : ISystem
     }
 
     [BurstCompile]
-    public void OnUpdate(ref SystemState state)
+   public void OnUpdate(ref SystemState state)
+{
+    // Increase the spawn timer by the time elapsed since the last frame
+    // 累加自上帧以来经过的时间到 spawn_timer
+    spawn_timer += SystemAPI.Time.DeltaTime;
+
+    // Check if one second has passed to trigger the spawn event
+    // 检查是否经过了一秒来触发生成事件
+    if (spawn_timer >= 1.0f)
     {
-        // Increase the spawn timer by the time elapsed since the last frame
-        // 累加自上帧以来经过的时间到 spawn_timer
-        spawn_timer += SystemAPI.Time.DeltaTime;
+        // Reset the timer
+        // 重置计时器
+        spawn_timer = 0f;
 
-        // Check if one second has passed to trigger the spawn event
-        // 检查是否经过了一秒来触发生成事件
-        if (spawn_timer >= 1.0f)
+        // Ensure the MonsterSpawn_Data singleton exists before spawning monsters
+        // 在生成怪物前确保 MonsterSpawn_Data 单例存在
+        if (SystemAPI.TryGetSingleton<MonsterSpawn_Data>(out var data))
         {
-            // Reset the timer
-            // 重置计时器
-            spawn_timer = 0f;
+            EntityManager entityManager = state.EntityManager;
+            int monsterCount = 2; // Number of monsters to spawn 每次生成的怪物数量
+            NativeArray<Entity> monsters = new NativeArray<Entity>(monsterCount, Allocator.Temp);
 
-            // Ensure the MonsterSpawn_Data singleton exists before spawning monsters
-            // 在生成怪物前确保 MonsterSpawn_Data 单例存在
-            if (SystemAPI.TryGetSingleton<MonsterSpawn_Data>(out var data))
+            // Instantiate monsters from the prefab provided in MonsterSpawn_Data
+            // 根据 MonsterSpawn_Data 中提供的预制体实例化怪物
+            entityManager.Instantiate(data.Prefab, monsters);
+
+            // Loop through each monster and set its position, scale, and random speed
+            // 遍历每个怪物，为其设置位置、缩放和随机速度
+            for (int i = 0; i < monsters.Length; i++)
             {
-                EntityManager entityManager = state.EntityManager;
-                int monsterCount = 2; // Number of monsters to spawn 每次生成的怪物数量
-                NativeArray<Entity> monsters = new NativeArray<Entity>(monsterCount, Allocator.Temp);
+                // Set a simple grid position; adjust as needed for your game
+                // 设置简单的网格位置；可根据游戏需要调整
+                float3 position = new float3(i % 100, 0, i / 100);
 
-                // Instantiate monsters from the prefab provided in MonsterSpawn_Data
-                // 根据 MonsterSpawn_Data 中提供的预制体实例化怪物
-                entityManager.Instantiate(data.Prefab, monsters);
-
-                // Loop through each monster and set its position and random speed
-                // 遍历每个怪物，为其设置位置和随机速度
-                for (int i = 0; i < monsters.Length; i++)
+                // Set position and scale (scale = 1)
+                // 设置位置和缩放（缩放值为 1）
+                entityManager.SetComponentData(monsters[i], new LocalTransform
                 {
-                    // Set a simple grid position; adjust as needed for your game
-                    // 设置简单的网格位置；可根据游戏需要调整
-                    float3 position = new float3(i % 100, 0, i / 100);
-                    entityManager.SetComponentData(monsters[i], new LocalTransform { Position = position });
+                    Position = position,
+                    Scale = 1f
+                });
 
-                    // Assign a random speed between 1 and 5 using our random generator
-                    // 使用我们的随机生成器为怪物分配 1 到 5 之间的随机速度
-                    // 要先添加Monster
-                    //entityManager.SetComponentData(monsters[i], new Monster { speed = random.NextFloat(1f, 5f) });
-                }
-
-                // Dispose of the temporary NativeArray to free memory
-                // 释放临时 NativeArray 内存
-                monsters.Dispose();
+                // Assign a random speed between 1 and 5 using our random generator
+                // 使用我们的随机生成器为怪物分配 1 到 5 之间的随机速度
+                // 要先添加Monster
+                //entityManager.SetComponentData(monsters[i], new Monster { speed = random.NextFloat(1f, 5f) });
             }
+
+            // Dispose of the temporary NativeArray to free memory
+            // 释放临时 NativeArray 内存
+            monsters.Dispose();
         }
     }
+}
+
 
     [BurstCompile]
     public void OnDestroy(ref SystemState state)
