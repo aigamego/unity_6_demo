@@ -67,7 +67,7 @@ partial struct MonsterSpawn_System : ISystem
             if (SystemAPI.TryGetSingleton<MonsterSpawn_Data>(out var data))
             {
                 EntityManager entityManager = state.EntityManager;
-                int monsterCount = 2; // Number of monsters to spawn 每次生成的怪物数量
+                int monsterCount = 10; // Number of monsters to spawn 每次生成的怪物数量
                 NativeArray<Entity> monsters = new NativeArray<Entity>(monsterCount, Allocator.Temp);
 
                 // Instantiate monsters from the prefab provided in MonsterSpawn_Data
