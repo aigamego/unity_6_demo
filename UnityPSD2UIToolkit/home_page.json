@@ -1,0 +1,52 @@
+{
+  "layers": [
+    {
+      "name": "btn_shop",
+      "position": {
+        "x": 865,
+        "y": 1200
+      },
+      "size": {
+        "width": 133,
+        "height": 147
+      },
+      "index": 0
+    },
+    {
+      "name": "btn_leaderboard",
+      "position": {
+        "x": 868,
+        "y": 1041
+      },
+      "size": {
+        "width": 131,
+        "height": 143
+      },
+      "index": 1
+    },
+    {
+      "name": "btn_clan",
+      "position": {
+        "x": 854,
+        "y": 856
+      },
+      "size": {
+        "width": 165,
+        "height": 177
+      },
+      "index": 2
+    },
+    {
+      "name": "ve_playerinfo",
+      "position": {
+        "x": 12,
+        "y": 174
+      },
+      "size": {
+        "width": 792,
+        "height": 178
+      },
+      "index": 3
+    }
+  ]
+}
